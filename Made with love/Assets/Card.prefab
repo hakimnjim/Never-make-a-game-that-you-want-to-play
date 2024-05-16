@@ -209,3 +209,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b2a3f134bdda06418beca4725f137d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  currentCard: {fileID: 5155229431441484248}
+  fontFace: {fileID: 21300000, guid: 7cea976e1ace4444f9ba08733394d76a, type: 3}
+  backFace: {fileID: -5177388603050735206, guid: 8884154dfe85442a3a3578be807dbcdf, type: 3}
+  flipDuration: 0.5
