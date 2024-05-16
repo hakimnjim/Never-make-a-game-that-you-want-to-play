@@ -12,10 +12,3 @@ public interface ICard
 
     bool IsFacingUp { get; set; }
 }
-
-[System.Serializable]
-public struct CardStruct
-{
-    public Sprite cardSprite;
-    public int cardID;
-}

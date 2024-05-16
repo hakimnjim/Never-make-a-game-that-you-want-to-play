@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class Card : MonoBehaviour, ICard
 {
+    private CardStruct _cardStruct;
     private bool flipInProgress;
     private bool isFacingUp;
     public bool FlipInProgress { get => flipInProgress; set => flipInProgress = value; }
@@ -19,7 +20,36 @@ public class Card : MonoBehaviour, ICard
 
     public void Init(CardStruct cardStruct)
     {
-       
+        _cardStruct = cardStruct;
+        fontFace = cardStruct.cardSprite;
+        GlobalEventManager.OnUpdateSelectedCard += OnUpdateSelectedCard;
+    }
+
+    private void OnUpdateSelectedCard(bool isMatch, Card card)
+    {
+        if (card == this)
+        {
+            CardMatching cardMatching = new CardMatching
+            {
+                card = this,
+                cardStruct = _cardStruct
+            };
+            GlobalEventManager.OnRemoveCard?.Invoke(cardMatching);
+            StartCoroutine(UpdateFlipCard(isMatch));
+        }
+    }
+
+    IEnumerator UpdateFlipCard(bool isMatch)
+    {
+        yield return new WaitForSeconds(1);
+        if (isMatch)
+        {
+            gameObject.SetActive(false);
+        }
+        else
+        {
+            Rotate(true);
+        }
     }
 
     public void Rotate(bool forceRotation = false)
@@ -44,12 +74,22 @@ public class Card : MonoBehaviour, ICard
             .OnComplete(() =>
             {
                 FlipInProgress = false;
-            });
-    }
 
-    private void OnMouseDown()
-    {
-        
+                CardMatching cardMatching = new CardMatching
+                {
+                    card = this,
+                    cardStruct = _cardStruct
+                };
+
+                if (IsFacingUp)
+                {
+                    GlobalEventManager.OnAddCard?.Invoke(cardMatching);
+                }
+                else
+                {
+                    GlobalEventManager.OnRemoveCard?.Invoke(cardMatching);
+                }
+            });
     }
 
     private void OnMouseUp()
@@ -60,6 +100,13 @@ public class Card : MonoBehaviour, ICard
 
     private void OnDisable()
     {
-        
+        GlobalEventManager.OnUpdateSelectedCard -= OnUpdateSelectedCard;
     }
+}
+
+[System.Serializable]
+public struct CardMatching
+{
+    public Card card;
+    public CardStruct cardStruct;
 }
