@@ -15,4 +15,13 @@ public class GlobalEventManager
 
     public delegate void ScaleGridInContainer(int rows, int cols, List<Card> currentCards);
     public static ScaleGridInContainer OnScaleGridInContainer;
+
+    public delegate void UpdateGameScore(int turnCount, int matcheCount);
+    public static UpdateGameScore OnUpdateGameScore;
+
+    public delegate void UpdateTimer(string time);
+    public static UpdateTimer OnUpdateTimer;
+
+    public delegate void GameOver(int Score);
+    public static GameOver OnGameOver;
 }

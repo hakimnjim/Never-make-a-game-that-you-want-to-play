@@ -12,6 +12,11 @@ public class GameManager : MonoBehaviour
     [SerializeField] private List<MatchingGame> matchingGames;
     [SerializeField] private MatchingCardType currentMatchingCardType;
     private MatchingGame currentMatchingGame;
+    private float gameTime;
+    private int tunrnsCount;
+    private int matchesCount;
+    private int matchesRequire;
+    private bool gameOver;
 
 
     private void OnEnable()
@@ -35,6 +40,7 @@ public class GameManager : MonoBehaviour
         }
         int rows = currentMatchingGame.rows;
         int columns = currentMatchingGame.columns;
+        matchesRequire = (rows * columns) / 2;
         Shuffle(allCard.cardItems);
         if (allCard.cardItems.Count >= rows * columns)
         {
@@ -72,8 +78,20 @@ public class GameManager : MonoBehaviour
             CardStruct c2 = cardMtchings[1].cardStruct;
             CardMatching cardMatching1 = cardMtchings[0];
             CardMatching cardMatching2 = cardMtchings[1];
-            GlobalEventManager.OnUpdateSelectedCard?.Invoke(c1.cardID == c2.cardID, cardMatching1.card);
-            GlobalEventManager.OnUpdateSelectedCard?.Invoke(c1.cardID == c2.cardID, cardMatching2.card);
+            bool isMAtching = c1.cardID == c2.cardID;
+            tunrnsCount++;
+            if (isMAtching)
+            {
+                matchesCount++;
+                if (matchesCount == matchesRequire)
+                {
+                    GlobalEventManager.OnGameOver?.Invoke(matchesCount * 1000 * matchesRequire / tunrnsCount * (int)gameTime);
+                    gameOver = true;
+                }
+            }
+            GlobalEventManager.OnUpdateSelectedCard?.Invoke(isMAtching, cardMatching1.card);
+            GlobalEventManager.OnUpdateSelectedCard?.Invoke(isMAtching, cardMatching2.card);
+            GlobalEventManager.OnUpdateGameScore?.Invoke(tunrnsCount, matchesCount);
         }
     }
 
@@ -83,10 +101,6 @@ public class GameManager : MonoBehaviour
         if (index != -1)
         {
             cardMtchings.RemoveAt(index);
-        }
-        else
-        {
-            Debug.Log("Something wrong");
         }
     }
 
@@ -102,6 +116,24 @@ public class GameManager : MonoBehaviour
             list[k] = list[n];
             list[n] = value;
         }
+    }
+
+    private void Update()
+    {
+        if (gameOver)
+        {
+            return;
+        }
+
+        gameTime += Time.deltaTime;
+
+        // Calculate minutes and seconds
+        int minutes = Mathf.FloorToInt(gameTime / 60f);
+        int seconds = Mathf.FloorToInt(gameTime % 60f);
+
+        // Format the time as "00:00"
+        string timeString = string.Format("{0:00}:{1:00}", minutes, seconds);
+        GlobalEventManager.OnUpdateTimer?.Invoke(timeString);
     }
 
     private void OnDisable()
