@@ -24,11 +24,18 @@ public class ScaleGridInSquareContainer : MonoBehaviour
 
     private void OnScaleGridInContainer(int rows, int columns, List<Card> currentCards)
     {
-        float cellSize = (container.localScale.x - (columns - 1) * spacing) / columns;
-        float scaleFactor = cellSize / (icon.sprite.rect.width * 1.1f / icon.sprite.pixelsPerUnit);
+        float cellSizeX = (container.localScale.x - (columns - 1) * spacing) / columns;
+        float cellSizeY = (container.localScale.y - (rows - 1) * spacing) / rows;
+        float cellSize = Mathf.Min(cellSizeX, cellSizeY);
+        float scaleFactor = cellSize / (icon.sprite.rect.width / icon.sprite.pixelsPerUnit);
 
-        float startX = container.position.x - container.localScale.x / 2 + cellSize / 2;
-        float startY = container.position.y + container.localScale.y / 2 - cellSize / 2;
+        // Calculate total width and height of the grid
+        float totalWidth = columns * cellSize + (columns - 1) * spacing;
+        float totalHeight = rows * cellSize + (rows - 1) * spacing;
+
+        // Calculate starting position to center the grid within the container
+        float startX = container.position.x - totalWidth / 2 + cellSize / 2;
+        float startY = container.position.y + totalHeight / 2 - cellSize / 2;
 
         for (int row = 0; row < rows; row++)
         {

@@ -9,8 +9,10 @@ public class GameManager : MonoBehaviour
     private List<CardItem> currentCards;
     private List<Card> gameCards = new List<Card>();
     public List<CardMatching> cardMtchings;
-    [SerializeField] private int rows = 2;
-    [SerializeField] private int columns = 2;
+    [SerializeField] private List<MatchingGame> matchingGames;
+    [SerializeField] private MatchingCardType currentMatchingCardType;
+    private MatchingGame currentMatchingGame;
+
 
     private void OnEnable()
     {
@@ -19,13 +21,20 @@ public class GameManager : MonoBehaviour
         InitGame();
     }
 
-    private void Start()
-    {
-        GlobalEventManager.OnScaleGridInContainer?.Invoke(rows, columns, gameCards);
-    }
-
     private void InitGame()
     {
+        int indexGameType = matchingGames.FindIndex(x => x.matchingCardType == currentMatchingCardType);
+        if (indexGameType != -1)
+        {
+            currentMatchingGame = matchingGames[indexGameType];
+        }
+        else
+        {
+            Debug.Log("Something wrong");
+            return;
+        }
+        int rows = currentMatchingGame.rows;
+        int columns = currentMatchingGame.columns;
         Shuffle(allCard.cardItems);
         if (allCard.cardItems.Count >= rows * columns)
         {
@@ -47,6 +56,11 @@ public class GameManager : MonoBehaviour
                 }
             }
         }
+    }
+
+    private void Start()
+    {
+        GlobalEventManager.OnScaleGridInContainer?.Invoke(currentMatchingGame.rows, currentMatchingGame.columns, gameCards);
     }
 
     private void OnAddCard(CardMatching cardMatching)
@@ -95,4 +109,14 @@ public class GameManager : MonoBehaviour
         GlobalEventManager.OnAddCard -= OnAddCard;
         GlobalEventManager.OnRemoveCard -= OnRemoveCard;
     }
+}
+
+public enum MatchingCardType { None, TwoByTwo, TwoByThree, ThreeByTwo, OneByFour}
+
+[System.Serializable]
+public struct MatchingGame
+{
+    public MatchingCardType matchingCardType;
+    public int rows;
+    public int columns;
 }

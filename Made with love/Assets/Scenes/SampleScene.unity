@@ -159,7 +159,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_BackGroundColor: {r: 0, g: 0.9032209, b: 1, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -218,7 +218,7 @@ GameObject:
   - component: {fileID: 721287436}
   - component: {fileID: 721287435}
   m_Layer: 0
-  m_Name: Square
+  m_Name: Container
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -264,9 +264,9 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: -1
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 0}
+  m_Color: {r: 1, g: 0.7971634, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -285,7 +285,7 @@ Transform:
   m_GameObject: {fileID: 721287434}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 7.74386, y: 7.74386, z: 7.74386}
+  m_LocalScale: {x: 5.475683, y: 5.475683, z: 5.475683}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -338,8 +338,20 @@ MonoBehaviour:
   cardPrefab: {fileID: 1093390153, guid: 38f9111257f079a4d8309417deb8fc2d, type: 3}
   allCard: {fileID: 11400000, guid: 1d8fe81846ef2944185e8f5f4807fc5f, type: 2}
   cardMtchings: []
-  rows: 2
-  columns: 2
+  matchingGames:
+  - matchingCardType: 1
+    rows: 2
+    columns: 2
+  - matchingCardType: 1
+    rows: 2
+    columns: 3
+  - matchingCardType: 3
+    rows: 3
+    columns: 2
+  - matchingCardType: 4
+    rows: 4
+    columns: 1
+  currentMatchingCardType: 3
 --- !u!1 &2061443447
 GameObject:
   m_ObjectHideFlags: 0
@@ -372,7 +384,7 @@ MonoBehaviour:
   mainCamera: {fileID: 519420031}
   spacing: 0.1
   container: {fileID: 721287436}
-  targetDepth: 10
+  targetDepth: 8
   icon: {fileID: 5155229432625104198, guid: 38f9111257f079a4d8309417deb8fc2d, type: 3}
 --- !u!4 &2061443449
 Transform:
