@@ -6,7 +6,6 @@ using UnityEngine;
 public class CardItem : ScriptableObject
 {
     public CardStruct cardStruct;
-   
 }
 
 [System.Serializable]

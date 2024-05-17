@@ -1,4 +1,5 @@
 using DG.Tweening;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -23,6 +24,15 @@ public class Card : MonoBehaviour, ICard
         _cardStruct = cardStruct;
         fontFace = cardStruct.cardSprite;
         GlobalEventManager.OnUpdateSelectedCard += OnUpdateSelectedCard;
+        GlobalEventManager.OnDisableCard += OnDisableCard;
+    }
+
+    private void OnDisableCard(int id)
+    {
+        if (id == _cardStruct.cardID)
+        {
+            gameObject.SetActive(false);
+        }
     }
 
     private void OnUpdateSelectedCard(bool isMatch, Card card)
@@ -101,6 +111,7 @@ public class Card : MonoBehaviour, ICard
     private void OnDisable()
     {
         GlobalEventManager.OnUpdateSelectedCard -= OnUpdateSelectedCard;
+        GlobalEventManager.OnDisableCard -= OnDisableCard;
     }
 }
 

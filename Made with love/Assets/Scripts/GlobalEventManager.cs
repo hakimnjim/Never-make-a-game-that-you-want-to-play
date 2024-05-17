@@ -24,4 +24,7 @@ public class GlobalEventManager
 
     public delegate void GameOver(int Score);
     public static GameOver OnGameOver;
+
+    public delegate void DisableCard(int id);
+    public static DisableCard OnDisableCard;
 }

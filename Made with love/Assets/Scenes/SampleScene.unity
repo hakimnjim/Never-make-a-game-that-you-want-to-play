@@ -709,7 +709,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 721287434}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.25, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 5.475683, y: 5.475683, z: 5.475683}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1271,16 +1271,25 @@ MonoBehaviour:
   - matchingCardType: 1
     rows: 2
     columns: 2
+    currentCards: []
+    matchingCards: []
   - matchingCardType: 1
     rows: 2
     columns: 3
+    currentCards: []
+    matchingCards: []
   - matchingCardType: 3
     rows: 3
     columns: 2
+    currentCards: []
+    matchingCards: []
   - matchingCardType: 4
     rows: 4
     columns: 1
-  currentMatchingCardType: 3
+    currentCards: []
+    matchingCards: []
+  currentMatchingCardType: 1
+  levelDatas: []
 --- !u!1 &1185761431
 GameObject:
   m_ObjectHideFlags: 0
