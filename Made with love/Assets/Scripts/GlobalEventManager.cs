@@ -27,4 +27,7 @@ public class GlobalEventManager
 
     public delegate void DisableCard(int id);
     public static DisableCard OnDisableCard;
+
+    public delegate ScoreData GetLeaderboard(MatchingCardType matchingCardType);
+    public static GetLeaderboard OnGetLeaderboard;
 }

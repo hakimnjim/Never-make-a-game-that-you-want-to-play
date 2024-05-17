@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
+using UnityEngine.SceneManagement;
 
 public class GameUI : MonoBehaviour
 {
@@ -30,6 +31,7 @@ public class GameUI : MonoBehaviour
     IEnumerator OnCoroutineGameOver()
     {
         yield return new WaitForSeconds(1);
+        GameData.Instance.PlayEffect(SoundEffectType.GameWin);
         gameWinPanel.transform.localScale = Vector3.zero;
         gameWinPanel.SetActive(true);
         leftContainer.SetActive(false);
@@ -45,6 +47,11 @@ public class GameUI : MonoBehaviour
     {
         turnsText.text = turnCount.ToString("D3");
         matchesText.text = matcheCount.ToString("D3");
+    }
+
+    public void LoadMAinMenu()
+    {
+        SceneManager.LoadSceneAsync(0);
     }
 
     private void OnDisable()

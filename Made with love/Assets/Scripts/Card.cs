@@ -71,6 +71,7 @@ public class Card : MonoBehaviour, ICard
         float duration = 0;
         Quaternion targetRotation = IsFacingUp ? Quaternion.identity : Quaternion.Euler(0, 180, 0);
         IsFacingUp = !IsFacingUp;
+        GameData.Instance.PlayEffect(SoundEffectType.FlipFace);
         transform.DORotateQuaternion(targetRotation, flipDuration)
             .SetEase(flipEase).OnUpdate(() =>
             {
@@ -99,6 +100,7 @@ public class Card : MonoBehaviour, ICard
                 {
                     GlobalEventManager.OnRemoveCard?.Invoke(cardMatching);
                 }
+                
             });
     }
 
