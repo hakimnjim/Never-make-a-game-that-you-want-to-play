@@ -8,26 +8,36 @@ public class GameManager : MonoBehaviour
 {
     [SerializeField] private Card cardPrefab;
     [SerializeField] private AllCardItems allCard;
-    private List<Card> gameCards = new List<Card>();
-    public List<CardMatching> cardMtchings;
     [SerializeField] private List<MatchingGame> matchingGames;
     private MatchingGame currentMatchingGame;
     private bool gameOver;
-    public List<LevelData> levelDatas = new List<LevelData>();
-    public List<ScoreData> scoreDatas = new List<ScoreData>();
+    private List<LevelData> levelDatas = new List<LevelData>();
+    private List<ScoreData> scoreDatas = new List<ScoreData>();
+    private List<CardMatching> cardMtchings = new List<CardMatching>();
+    private List<Card> gameCards = new List<Card>();
 
 
     private void OnEnable()
     {
         GlobalEventManager.OnAddCard += OnAddCard;
         GlobalEventManager.OnRemoveCard += OnRemoveCard;
+        GlobalEventManager.OnSaveData += SaveLevelProgressData;
         InitGame();
+    }
+
+    private void Start()
+    {
+        GlobalEventManager.OnScaleGridInContainer?.Invoke(currentMatchingGame.rows, currentMatchingGame.columns, gameCards);
+        foreach (var item in currentMatchingGame.matchingCards)
+        {
+            GlobalEventManager.OnDisableCard?.Invoke(item.cardID);
+        }
+        GlobalEventManager.OnUpdateGameScore?.Invoke(currentMatchingGame.tunrnsCount, currentMatchingGame.matchesCount);
     }
 
     private void InitGame()
     {
         currentMatchingGame.matchingCardType = GameData.Instance.CurrentMatchingCardType;
-        //currentMatchingGame.matchingCardType = MatchingCardType.TwoByTwo;
         int indexGameType = matchingGames.FindIndex(x => x.matchingCardType == currentMatchingGame.matchingCardType);
         if (indexGameType != -1)
         {
@@ -54,7 +64,7 @@ public class GameManager : MonoBehaviour
             rows = currentMatchingGame.rows;
             columns = currentMatchingGame.columns;
             Shuffle(allCard.cardItems);
-            if (allCard.cardItems.Count >= rows * columns)
+            if (allCard.cardItems.Count >= rows * columns / 2)
             {
                 currentMatchingGame.currentCards = allCard.cardItems.GetRange(0, rows * columns / 2);
                 currentMatchingGame.currentCards.AddRange(currentMatchingGame.currentCards);
@@ -72,10 +82,8 @@ public class GameManager : MonoBehaviour
                     matchesRequire = 0,
                     gameTime = 0
                 };
-                
-
                 levelDatas.Add(leveldata);
-                SaveSystem.save(levelDatas, scoreDatas);
+                SaveSystem.Save(levelDatas, scoreDatas);
             }
             else
             {
@@ -83,6 +91,7 @@ public class GameManager : MonoBehaviour
                 return;
             }
         }
+
         currentMatchingGame.matchesRequire = (rows * columns) / 2;
 
         for (int row = 0; row < rows; row++)
@@ -103,7 +112,7 @@ public class GameManager : MonoBehaviour
     private bool LoadGame(ref MatchingGame matchingGame)
     {
         var data = matchingGame;
-        var saveData = SaveSystem.load();
+        var saveData = SaveSystem.Load();
 
         if (saveData != null && saveData.levelDatas.Count > 0)
         {
@@ -116,11 +125,12 @@ public class GameManager : MonoBehaviour
                                 .Select(cardID => allCard.cardItems.FirstOrDefault(item => item.cardStruct.cardID == cardID))
                                 .Where(item => item != null)
                                 .ToList();
+
                 List<CardStruct> matchingCards = saveData.levelDatas[index].cardMatching
-    .Select(cardID => allCard.cardItems.FirstOrDefault(item => item.cardStruct.cardID == cardID))
-    .Where(item => item != null)
-    .Select(item => item.cardStruct) // Extract the CardStruct from each CardItem
-    .ToList();
+                                    .Select(cardID => allCard.cardItems.FirstOrDefault(item => item.cardStruct.cardID == cardID))
+                                    .Where(item => item != null)
+                                    .Select(item => item.cardStruct) 
+                                    .ToList();
 
                 if (cardItems.Count == matchingGame.columns * matchingGame.rows)
                 {
@@ -156,14 +166,13 @@ public class GameManager : MonoBehaviour
 
     private void LoadScore()
     {
-        var saveData = SaveSystem.load();
+        var saveData = SaveSystem.Load();
         scoreDatas = saveData.scoreDatas;
     }
 
-
     private void SaveLevelProgressData()
     {
-        var saveData = SaveSystem.load();
+        var saveData = SaveSystem.Load();
         if (saveData != null && saveData.levelDatas.Count > 0)
         {
             int index = saveData.levelDatas.FindIndex(x => x.matchingCardType == currentMatchingGame.matchingCardType);
@@ -174,7 +183,7 @@ public class GameManager : MonoBehaviour
                 {
                     levelDatas.Remove(level);
                     saveData.levelDatas.Remove(level);
-                    SaveSystem.save(levelDatas, scoreDatas);
+                    SaveSystem.Save(levelDatas, scoreDatas);
                 }
                 else
                 {
@@ -187,7 +196,7 @@ public class GameManager : MonoBehaviour
                     if (leveDataIndex != -1)
                     {
                         levelDatas[leveDataIndex] = level;
-                        SaveSystem.save(levelDatas, scoreDatas);
+                        SaveSystem.Save(levelDatas, scoreDatas);
                     }
                     else
                     {
@@ -205,15 +214,6 @@ public class GameManager : MonoBehaviour
         }
 
     }
-    private void Start()
-    {
-        GlobalEventManager.OnScaleGridInContainer?.Invoke(currentMatchingGame.rows, currentMatchingGame.columns, gameCards);
-        foreach (var item in currentMatchingGame.matchingCards)
-        {
-            GlobalEventManager.OnDisableCard?.Invoke(item.cardID);
-        }
-        GlobalEventManager.OnUpdateGameScore?.Invoke(currentMatchingGame.tunrnsCount, currentMatchingGame.matchesCount);
-    }
 
     private void OnAddCard(CardMatching cardMatching)
     {
@@ -226,6 +226,7 @@ public class GameManager : MonoBehaviour
             CardMatching cardMatching2 = cardMtchings[1];
             bool isMAtching = c1.cardID == c2.cardID;
             currentMatchingGame.tunrnsCount++;
+
             if (isMAtching)
             {
                 currentMatchingGame.matchesCount++;
@@ -253,7 +254,7 @@ public class GameManager : MonoBehaviour
                         {
                             levelDatas.RemoveAt(levelIndex);
                         }
-                        SaveSystem.save(levelDatas, scoreDatas);
+                        SaveSystem.Save(levelDatas, scoreDatas);
                     }
   
                     GlobalEventManager.OnGameOver?.Invoke(score);
@@ -266,7 +267,6 @@ public class GameManager : MonoBehaviour
             GlobalEventManager.OnUpdateSelectedCard?.Invoke(isMAtching, cardMatching1.card);
             GlobalEventManager.OnUpdateSelectedCard?.Invoke(isMAtching, cardMatching2.card);
             GlobalEventManager.OnUpdateGameScore?.Invoke(currentMatchingGame.tunrnsCount, currentMatchingGame.matchesCount);
-            
         }
     }
 
@@ -313,7 +313,7 @@ public class GameManager : MonoBehaviour
     {
         GlobalEventManager.OnAddCard -= OnAddCard;
         GlobalEventManager.OnRemoveCard -= OnRemoveCard;
-        SaveLevelProgressData();
+        GlobalEventManager.OnSaveData -= SaveLevelProgressData;
     }
 
     private void OnApplicationQuit()
@@ -321,25 +321,9 @@ public class GameManager : MonoBehaviour
         SaveLevelProgressData();
     }
 
-    private void SaveGameTime()
-    {
-        var saveData = SaveSystem.load();
-        if (saveData != null)
-        {
-            var indexLevelData = saveData.levelDatas.FindIndex(x => x.matchingCardType == currentMatchingGame.matchingCardType);
-            if (indexLevelData != -1)
-            {
-                var levelData = saveData.levelDatas[indexLevelData];
-                levelData.gameTime = currentMatchingGame.gameTime;
-                saveData.levelDatas[indexLevelData] = levelData;
-                SaveSystem.save(saveData.levelDatas, scoreDatas);
-                Debug.Log(levelData.gameTime);
-            }
-        }
-    }
 }
 
-public enum MatchingCardType { None, TwoByTwo, TwoByThree, ThreeByTwo, OneByFour}
+public enum MatchingCardType { None, TwoByTwo, TwoByThree, FiveBySix}
 
 [System.Serializable]
 public struct MatchingGame

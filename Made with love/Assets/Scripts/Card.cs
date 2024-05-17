@@ -107,7 +107,6 @@ public class Card : MonoBehaviour, ICard
     private void OnMouseUp()
     {
         Rotate();
-        Debug.Log("hey we select this card " + this.gameObject.name);
     }
 
     private void OnDisable()

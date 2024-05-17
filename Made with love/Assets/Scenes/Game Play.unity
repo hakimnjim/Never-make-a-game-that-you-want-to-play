@@ -1166,17 +1166,8 @@ MonoBehaviour:
     matchesRequire: 0
     gameTime: 0
   - matchingCardType: 3
-    rows: 3
-    columns: 2
-    currentCards: []
-    matchingCards: []
-    tunrnsCount: 0
-    matchesCount: 0
-    matchesRequire: 0
-    gameTime: 0
-  - matchingCardType: 4
-    rows: 4
-    columns: 1
+    rows: 5
+    columns: 6
     currentCards: []
     matchingCards: []
     tunrnsCount: 0

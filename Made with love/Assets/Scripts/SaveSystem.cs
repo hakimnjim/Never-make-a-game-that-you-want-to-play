@@ -6,21 +6,19 @@ using System.Runtime.Serialization.Formatters.Binary;
 
 public static class SaveSystem
 {
-    public static void save(List<LevelData> levels, List<ScoreData> scores) // Modify the save method
+    public static void Save(List<LevelData> levels, List<ScoreData> scores)
     {
         BinaryFormatter formatter = new BinaryFormatter();
-        string path = Application.persistentDataPath + "/playerV.data";
-
+        string path = Application.persistentDataPath + "/playerData.data";
         FileStream stream = new FileStream(path, FileMode.Create);
-        PlayerData data = new PlayerData(levels, scores); // Modify the instantiation of PlayerData
+        PlayerData data = new PlayerData(levels, scores);
         formatter.Serialize(stream, data);
         stream.Close();
     }
 
-    public static PlayerData load()
+    public static PlayerData Load()
     {
-        string path = Application.persistentDataPath + "/playerV.data";
-        Debug.Log(path);
+        string path = Application.persistentDataPath + "/playerData.data";
         if (File.Exists(path))
         {
             BinaryFormatter formatter = new BinaryFormatter();
@@ -32,14 +30,13 @@ public static class SaveSystem
         }
         else
         {
-            //Debug.LogError("save file not found");
             return null;
         }
     }
 
-    public static bool verifPath()
+    public static bool VerifPath()
     {
-        string path = Application.persistentDataPath + "/playerV.data";
+        string path = Application.persistentDataPath + "/playerData.data";
         if (File.Exists(path))
         {
             return true;

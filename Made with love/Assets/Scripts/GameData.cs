@@ -31,9 +31,9 @@ public class GameData : MonoBehaviour
         {
             Destroy(gameObject);
         }
-        if (!SaveSystem.verifPath())
+        if (!SaveSystem.VerifPath())
         {
-            SaveSystem.save(new List<LevelData>(), new List<ScoreData>());
+            SaveSystem.Save(new List<LevelData>(), new List<ScoreData>());
         }
     }
 
@@ -44,7 +44,7 @@ public class GameData : MonoBehaviour
 
     public ScoreData GetScoreData(MatchingCardType matchingCardType)
     {
-        var scoreDatas = SaveSystem.load().scoreDatas;
+        var scoreDatas = SaveSystem.Load().scoreDatas;
         var scoreData = new ScoreData();
 
         if (scoreDatas.Count > 0)
@@ -80,6 +80,12 @@ public class GameData : MonoBehaviour
             effectAudioSource.Add(newAudioSource);
         }
 
+    }
+
+    public void ClearData()
+    {
+        SaveSystem.Save(new List<LevelData>(), new List<ScoreData>());
+        GlobalEventManager.OnClearData?.Invoke();
     }
 
     private void OnDisable()

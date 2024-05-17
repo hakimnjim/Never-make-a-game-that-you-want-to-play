@@ -51,6 +51,7 @@ public class GameUI : MonoBehaviour
 
     public void LoadMAinMenu()
     {
+        GlobalEventManager.OnSaveData?.Invoke();
         SceneManager.LoadSceneAsync(0);
     }
 

@@ -30,4 +30,10 @@ public class GlobalEventManager
 
     public delegate ScoreData GetLeaderboard(MatchingCardType matchingCardType);
     public static GetLeaderboard OnGetLeaderboard;
+
+    public delegate void ClearData();
+    public static ClearData OnClearData;
+
+    public delegate void SaveData();
+    public static SaveData OnSaveData;
 }
