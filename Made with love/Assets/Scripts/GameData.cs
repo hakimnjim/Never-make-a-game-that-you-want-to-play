@@ -53,7 +53,7 @@ public class GameData : MonoBehaviour
             if (index != -1)
             {
                 scoreData = scoreDatas[index];
-                scoreData.scores.Sort();
+                scoreData.scores.Sort((a, b) => b.CompareTo(a));
             }
         }
 
